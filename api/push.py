@@ -64,7 +64,6 @@ class PushHandler(APIBaseHandler):
             return self.apnsconnections[self.app["shortname"]][instanceid]
 
     def reattempt_push_apns(self, alert, apnspayload, token):
-        print('reattempting this time')
         conn = self.get_apns_conn()
         url = IOS_PROD_URL if ios_production else IOS_DEV_URL
         conn.http2 = HTTP20Connection(url)
