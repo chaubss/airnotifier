@@ -156,7 +156,7 @@ class PushHandler(APIBaseHandler):
 
                 # https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html#//apple_ref/doc/uid/TP40008194-CH17-SW1
                 apns_default = {"badge": None, "sound": "default", "push_type": "alert"}
-                apnspayload = request_dict.get("apns", {})
+                apnspayload = request_dict.get("apns", request_dict.get("fcm", {}))
                 conn = self.get_apns_conn()
                 if conn:
                     try:

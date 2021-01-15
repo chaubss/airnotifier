@@ -85,6 +85,7 @@ class ApnsClient(PushService):
                 "sound",
                 "badge",
                 "alert",
+                "data",
             ]
         }
         # data structure:
