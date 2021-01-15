@@ -30,6 +30,7 @@ from http.client import BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, ACCEPTED
 from routes import route
 from api import APIBaseHandler, EntityBuilder
 from util import json_decode
+from hyper import HTTP20Connection
 import random
 import time
 import sys
@@ -39,7 +40,11 @@ from constants import (
     DEVICE_TYPE_ANDROID,
     DEVICE_TYPE_WNS,
     DEVICE_TYPE_FCM,
+    IOS_DEV_URL,
+    IOS_PROD_URL
 )
+from config import ios_production
+
 import logging
 import traceback
 import tornado
@@ -57,6 +62,22 @@ class PushHandler(APIBaseHandler):
         if count > 0:
             instanceid = random.randint(0, count - 1)
             return self.apnsconnections[self.app["shortname"]][instanceid]
+
+    def reattempt_push_apns(self, alert, apnspayload, token):
+        print('reattempting this time')
+        conn = self.get_apns_conn()
+        url = IOS_PROD_URL if ios_production else IOS_DEV_URL
+        conn.http2 = HTTP20Connection(url)
+        apns_default = {"badge": None, "sound": "default", "push_type": "alert"}
+        try:
+            conn.process(
+                token=token,
+                alert=alert,
+                apns={**apns_default, **apnspayload},
+            )
+        except Exception as ex:
+            logging.error(ex)
+            self.send_response(400, dict(error="error response from apns"))
 
     async def post(self):
         try:
@@ -147,7 +168,7 @@ class PushHandler(APIBaseHandler):
                         )
                     except Exception as ex:
                         logging.error(ex)
-                        self.send_response(400, dict(error="error response from apns"))
+                        self.reattempt_push_apns(alert, apnspayload, self.token)
                         return
                 else:
                     logging.error("no active apns connection")

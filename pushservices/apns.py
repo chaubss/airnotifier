@@ -7,9 +7,12 @@ import logging
 import hyper
 import jwt
 import time
+from config import ios_production
+from constants import (
+    IOS_DEV_URL,
+    IOS_PROD_URL
+)
 
-#  BASE_URL_DEV = "api.development.push.apple.com:443"
-BASE_URL_PROD = "api.push.apple.com:443"
 ALGORITHM = "ES256"
 
 
@@ -32,8 +35,8 @@ class ApnsClient(PushService):
         self.instanceid = kwargs["instanceid"]
         self.last_token_refresh = 0
         self.token = None
-        self.http2 = hyper.HTTPConnection(BASE_URL_PROD)
-        #  self.http2dev = hyper.HTTPConnection(BASE_URL_DEV)
+        url = IOS_PROD_URL if ios_production else IOS_DEV_URL
+        self.http2 = hyper.HTTPConnection(url)
 
     def create_token(self):
         now = time.time()

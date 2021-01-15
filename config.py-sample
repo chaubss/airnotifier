@@ -11,6 +11,8 @@ passwordsalt = 'd2o0n1g2s0h3e1n1g'
 cookiesecret = 'airnotifiercookiesecret'
 debug = False
 
+ios_production = False # True to use production url, False for dev
+
 masterdb = "airnotifier"
 collectionprefix = "obj_"
 dbprefix = ""

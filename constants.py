@@ -36,6 +36,8 @@ DEVICE_TYPE_MPNS = "mpns"
 DEVICE_TYPE_WNS = "wns"
 DEVICE_TYPE_SMS = "sms"
 
+IOS_DEV_URL = "api.development.push.apple.com:443"
+IOS_PROD_URL = "api.push.apple.com:443"
 
 KEY_APNS_AUTHKEY = "apns-auth-key"
 KEY_APNS_BUNDLEID = "apns-bundle-id"
